@@ -38,11 +38,29 @@ sealed class FList<out ITEM : Any> {
     }
 }
 
-fun <ITEM: Any> FList<ITEM>.filterUsingFlatMap(fcn: (ITEM) -> Boolean): FList<ITEM> {
-    return flatMap { if(fcn(it)) FList(it) else FList.Nil }
+
+fun <ITEM : Any, OTHER : Any, RESULT : Any> FList<ITEM>.zipWith(
+    other: FList<OTHER>,
+    fcn: (ITEM, OTHER) -> RESULT
+): FList<RESULT> {
+    return fold(FList<RESULT>() to other) { (acc, other), item ->
+        when (other) {
+            is FList.Cons -> FList.Cons(fcn(item, other.head), acc) to other.tail
+            is FList.Nil -> acc to other
+        }
+    }.first.reverse()
 }
 
-fun <ITEM: Any, OTHER: Any> FList<ITEM>.flatMapUsingMap(fcn: (ITEM) -> FList<OTHER>): FList<OTHER> {
+
+fun <ITEM : Any> FList<ITEM>.toFList(): List<ITEM> {
+    return fold(listOf()) { acc, item -> acc + item }
+}
+
+fun <ITEM : Any> FList<ITEM>.filterUsingFlatMap(fcn: (ITEM) -> Boolean): FList<ITEM> {
+    return flatMap { if (fcn(it)) FList(it) else FList.Nil }
+}
+
+fun <ITEM : Any, OTHER : Any> FList<ITEM>.flatMapUsingMap(fcn: (ITEM) -> FList<OTHER>): FList<OTHER> {
     return map { it -> fcn(it) }.flatten()
 }
 
@@ -171,7 +189,7 @@ fun <ITEM : Any> FList<ITEM>.drop(): FList<ITEM> {
     }
 }
 
-fun <ITEM : Any, OTHER: Any> FList<ITEM>.map(fcn: (ITEM) -> OTHER): FList<OTHER> {
+fun <ITEM : Any, OTHER : Any> FList<ITEM>.map(fcn: (ITEM) -> OTHER): FList<OTHER> {
     return foldRight2(FList()) { item, acc -> FList.Cons(fcn(item), acc) }
 }
 

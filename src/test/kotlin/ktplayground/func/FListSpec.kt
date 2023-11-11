@@ -114,5 +114,13 @@ class FListSpec : Spek({
     test("impl filter using flatMap") {
         assertEquals(FList(1, 2, 3, 4), FList(1, 2, 3, 4, 5).filterUsingFlatMap { it -> it < 5 })
     }
+
+    test("impl toList using fold") {
+        assertEquals(listOf(1, 2, 3, 4), FList(1, 2, 3, 4).toFList())
+    }
+
+    test("impl zipWith") {
+        assertEquals(listOf(1, 4, 9), FList(1, 2, 3).zipWith(FList(1, 2, 3)) { a, b -> a * b }.toFList())
+    }
 })
 

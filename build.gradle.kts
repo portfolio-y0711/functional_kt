@@ -38,6 +38,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("com.microsoft.playwright:playwright:1.31.0")
+
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
